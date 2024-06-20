@@ -1,0 +1,31 @@
+{
+  "type": "module",
+  "name": "nodeproject",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./src/index.js"
+  },
+  "keywords": [],
+  "author": "Tarteel Abdelfattah Elattar",
+  "license": "ISC",
+  "description": "Simple Coffee Shop Backend System using Node.js express and MongoDB",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "joi": "^17.13.3",
+    "joi-password": "^4.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.4.3",
+    "nodemon": "^3.1.4",
+    "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.5.0",
+    "eslint": "^9.5.0",
+    "globals": "^15.6.0"
+  }
+}
