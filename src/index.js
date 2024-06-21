@@ -3,11 +3,14 @@ import express from "express";
 import mongoose from "mongoose";
 import authRouter from "./routers/authentication.js";
 import { config } from 'dotenv';
+import requireAuth from "./middleware/authMiddleware.js";
+import cookieParser from "cookie-parser";
+import itemRouter from "./routers/item.js";
 
 config();
 const mongoURI = process.env.mongoURI;
 const app = express();
-
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -27,3 +30,4 @@ mongoose.connect(mongoURI)
 
 
 app.use("/", authRouter);
+app.use("/item", requireAuth, itemRouter);

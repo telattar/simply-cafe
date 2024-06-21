@@ -37,10 +37,10 @@ authRouter.post('/signUp', async (req, res) =>{
 
         const { username, password, firstName, lastName, email, gender } = req.body;
         const user = await authenticationController.signUp({username, password, firstName, lastName, email, gender});
-        res.status(CREATED).json({user});
+        return res.status(CREATED).json({user});
     } catch (error) {
         console.log(error)
-        res.status(error.code).json({message: error.message});
+        return res.status(error.code).json({message: error.message});
     }
 });
 

@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
-import { UNAUTHORIZED } from '../constants/statusCode';
+import { UNAUTHORIZED } from '../constants/statusCode.js';
 import { config } from 'dotenv';
+import express from 'express';
 
 config();
 const requireAuth = (req, res, next) => {
@@ -14,11 +15,10 @@ const requireAuth = (req, res, next) => {
         if (error)
             return res.status(UNAUTHORIZED).json({message: "You are not logged in."});
         else {
-            console.log(decodedToken);
             //authentication valid, continue with the next middleware.
+            req.user = decodedToken;
             next();
         }
-
     });
 }
 

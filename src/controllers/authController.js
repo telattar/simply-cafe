@@ -81,7 +81,7 @@ export const authenticationController = {
 
             else if (error instanceof APIError) throw error;
 
-            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Error.");
+            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
         }
     }
 }
