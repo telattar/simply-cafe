@@ -24,7 +24,7 @@ export const menuSchema = new mongoose.Schema({
         type: itemSchema
     },
     availability: {
-        type: boolean,
+        type: Boolean,
         required: true
     },
     stockCount: {
