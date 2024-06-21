@@ -45,5 +45,18 @@ export const itemController = {
 
             else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
         }
+    },
+
+    async deleteItem({ itemId }) {
+        try {
+            const deletedItem = await Items.deleteOne({ _id: itemId }).lean();
+            if (deletedItem.deletedCount === 0)
+                throw new APIError(NOT_FOUND, "No such item with this ID.");
+
+        } catch (error) {
+            if (error instanceof APIError) throw error;
+
+            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
+        }
     }
 }
