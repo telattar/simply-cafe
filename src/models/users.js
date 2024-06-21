@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ADMIN, CHEF, CUSTOMER, MALE, FEMALE } from '../constants/userTypes.js';
+import { ADMIN, CHEF, CUSTOMER, MALE, FEMALE, WAITER, MANAGER } from '../constants/userTypes.js';
 import Joi from "joi";
 import { joiPasswordExtendCore } from "joi-password";
 
@@ -20,7 +20,7 @@ export const userSchema = new mongoose.Schema({
     },
     userType: {
         type: String,
-        enum: [ADMIN, CHEF, CUSTOMER],
+        enum: [ADMIN, CHEF, CUSTOMER, WAITER, MANAGER],
         default: CUSTOMER
     },
     firstName: {
@@ -60,7 +60,7 @@ export const userValidationSchema = Joi.object({
         .min(6)
         .max(100)
         .required(),
-    userType: Joi.string().valid(ADMIN, CHEF, CUSTOMER).default(CUSTOMER),
+    userType: Joi.string().valid(ADMIN, CHEF, CUSTOMER, WAITER, MANAGER).default(CUSTOMER),
     firstName: Joi.string().min(2).max(100).required(),
     lastName: Joi.string().min(2).max(100).required(),
     email: Joi.string().email().required(),
