@@ -20,10 +20,7 @@ export const itemController = {
 
             // check for validation errors.
             if (error.name === "ValidationError") {
-                let message = "";
-                Object.keys(error.errors).forEach((key) => {
-                    message += error.errors[key].message + " ";
-                });
+                const message = Object.values(error.errors).map(val => val.message);
                 throw new APIError(BAD_REQUEST, message);
             }
 
@@ -72,10 +69,7 @@ export const itemController = {
 
             // check for validation errors.
             if (error.name === "ValidationError") {
-                let message = "";
-                Object.keys(error.errors).forEach((key) => {
-                    message += error.errors[key].message + " ";
-                });
+                const message = Object.values(error.errors).map(val => val.message);
                 throw new APIError(BAD_REQUEST, message);
             }
 
