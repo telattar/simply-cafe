@@ -8,7 +8,7 @@ const itemRouter = new express.Router();
 itemRouter.post('/createItem', async (req, res) => {
     try {
         if (![CHEF, ADMIN].includes(req.user.userType))
-            return res.status(FORBIDDEN).json({message: "Only a chef to create an item."});
+            return res.status(FORBIDDEN).json({message: "Only a chef can create an item."});
 
         const { itemType, itemName, price, description } = req.body;
         const newItem = await itemController.createItem({ itemType, itemName, price, description });
@@ -24,7 +24,7 @@ itemRouter.post('/createItem', async (req, res) => {
 itemRouter.get('/getItem', async (req, res) => {
     try {
         if (![CHEF, ADMIN].includes(req.user.userType))
-            return res.status(FORBIDDEN).json({message: "Only a chef to view a specific item's details."});
+            return res.status(FORBIDDEN).json({message: "Only a chef can view a specific item's details."});
 
         const { itemId } = req.query;
         const item = await itemController.getItem({ itemId });
@@ -34,24 +34,10 @@ itemRouter.get('/getItem', async (req, res) => {
     }
 });
 
-itemRouter.delete('/deleteItem', async (req, res) => {
-    try {
-        if (![CHEF, ADMIN].includes(req.user.userType))
-            return res.status(FORBIDDEN).json({message: "Only a chef to view a specific item's details."});
-        
-        const { itemId } = req.query;
-        await itemController.deleteItem({ itemId });
-        
-        return res.status(OK).json({message: "Item deleted successfully."});
-    } catch(error) {
-        return res.status(error.code).json({message: error.message});
-    }
-});
-
 itemRouter.patch('/updateItem', async (req, res) => {
     try {
         if (![CHEF, ADMIN].includes(req.user.userType))
-            return res.status(FORBIDDEN).json({message: "Only a chef to view a specific item's details."});
+            return res.status(FORBIDDEN).json({message: "Only a chef can update an item."});
 
         const { itemId } = req.query;
         const { itemName, price, description } = req.body;
@@ -66,5 +52,21 @@ itemRouter.patch('/updateItem', async (req, res) => {
         return res.status(error.code).json({message: error.message});
     }
 });
+
+itemRouter.delete('/deleteItem', async (req, res) => {
+    try {
+        if (![CHEF, ADMIN].includes(req.user.userType))
+            return res.status(FORBIDDEN).json({message: "Only a chef can delete an item."});
+        
+        const { itemId } = req.query;
+        await itemController.deleteItem({ itemId });
+        
+        return res.status(OK).json({message: "Item deleted successfully."});
+    } catch(error) {
+        return res.status(error.code).json({message: error.message});
+    }
+});
+
+
 
 export default itemRouter;

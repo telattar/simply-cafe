@@ -8,10 +8,6 @@ const BUNDLE = "Bundle";
 const ITEM = "Item";
 
 export const menuSchema = new mongoose.Schema({
-    menuItemName: {
-        type: String,
-        required: true
-    },
     type: {
         type: String,
         enum: [BUNDLE, ITEM],
