@@ -58,5 +58,30 @@ export const itemController = {
 
             else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
         }
+    },
+
+    async updateItem({ itemId, itemName, price, description}) {
+        try {
+            
+            await Items.updateOne({ _id: itemId }, { itemName, price, description });
+
+        } catch(error) {
+            console.log(error)
+            if (error.code === 11000)
+                    throw new APIError(BAD_REQUEST, "This item name already exists.");
+
+            // check for validation errors.
+            if (error.name === "ValidationError") {
+                let message = "";
+                Object.keys(error.errors).forEach((key) => {
+                    message += error.errors[key].message + " ";
+                });
+                throw new APIError(BAD_REQUEST, message);
+            }
+
+            else if (error instanceof APIError) throw error;
+
+            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
+        }
     }
 }
