@@ -48,11 +48,7 @@ export const userSchema = new mongoose.Schema({
         required: true,
         enum: [MALE, FEMALE],
         // "other" or "prefer not to say" is not an acceptable answer.
-    },
-    orders: [{
-        type: orderSchema,
-        ref: Orders
-    }]
+    }
 });
 
 export const userValidationSchema = Joi.object({
