@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { ADMIN, CHEF, CUSTOMER, MALE, FEMALE, WAITER, MANAGER } from '../constants/userTypes.js';
 import Joi from "joi";
 import { joiPasswordExtendCore } from "joi-password";
+import { Orders, orderSchema } from "./orders.js";
 
 const joiPassword = Joi.extend(joiPasswordExtendCore);
 export const userSchema = new mongoose.Schema({
@@ -48,6 +49,10 @@ export const userSchema = new mongoose.Schema({
         enum: [MALE, FEMALE],
         // "other" or "prefer not to say" is not an acceptable answer.
     },
+    orders: [{
+        type: orderSchema,
+        ref: Orders
+    }]
 });
 
 export const userValidationSchema = Joi.object({

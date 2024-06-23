@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import itemRouter from "./routers/item.js";
 import bundleRouter from "./routers/bundles.js";
 import menuRouter from "./routers/menu.js";
+import orderRouter from "./routers/order.js";
 
 config();
 const mongoURI = process.env.mongoURI;
@@ -35,3 +36,4 @@ app.use("/", authRouter);
 app.use("/item", requireAuth, itemRouter);
 app.use("/bundle", requireAuth, bundleRouter);
 app.use("/menu", requireAuth, menuRouter);
+app.use("/order", requireAuth, orderRouter);

@@ -1,18 +1,17 @@
 import mongoose from "mongoose";
 import Joi from "joi";
-import { Users } from "./users";
-import { Menu, menuSchema } from "./menu";
-import { CARD, CASH, INSTAPAY } from "../constants/paymentMethod";
-import { PREPARING, orderStatus } from "../constants/orderStatus";
+import { Menu, menuSchema } from "./menu.js";
+import { CARD, CASH, INSTAPAY } from "../constants/paymentMethod.js";
+import { CANCELLED, COMPLETE, PREPARING } from "../constants/orderStatus.js";
 
-const orderSchema = new mongoose.Schema({
+export const orderSchema = new mongoose.Schema({
     customerId: {
         type: mongoose.Schema.ObjectId,
-        ref: Users,
+        ref: 'Users',
         required: true
     },
     date: {
-        type : Date,
+        type: Date,
         required: true,
         default: Date.now
     },
@@ -35,11 +34,16 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: [...orderStatus],
+        enum: [PREPARING, COMPLETE, CANCELLED],
         required: true,
         default: PREPARING
     }
 });
+
+orderSchema.index(
+    { 'orderedItems.bundle.bundleName': 1 },
+    { unique: false }
+);
 
 export const orderValidationSchema = Joi.object({
     customerId: Joi.string().hex().length(24).required(), // object ID validation
@@ -48,6 +52,6 @@ export const orderValidationSchema = Joi.object({
     totalPrice: Joi.number().min(0).required(),
     comment: Joi.string().allow(""),
     paymentMethod: Joi.string().valid(CASH, CARD, INSTAPAY).required(),
-    status: Joi.string().valid([...orderStatus]).required().default(PREPARING)
+    status: Joi.string().valid(PREPARING, COMPLETE, CANCELLED).required().default(PREPARING)
 });
-export const Bundles = mongoose.model('orders', orderSchema);
+export const Orders = mongoose.model('orders', orderSchema);

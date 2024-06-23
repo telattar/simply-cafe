@@ -10,3 +10,4 @@ export const CONFLICT = 409;
 export const INTERNAL_SERVER_ERROR = 500;
 
 
+export const INTERNAL_ERROR_MESSAGE = "INTERNAL SERVER ERROR: Something went wrong on our end."
