@@ -1,5 +1,5 @@
 import APIError from "../classes/APIError.js";
-import { BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND } from "../constants/statusCode.js";
+import { BAD_REQUEST, INTERNAL_ERROR_MESSAGE, INTERNAL_SERVER_ERROR, NOT_FOUND } from "../constants/statusCode.js";
 import { Bundles } from "../models/bundles.js";
 import { Items } from "../models/items.js"
 import { BUNDLE, ITEM, Menu, menuValidationSchema } from "../models/menu.js";
@@ -38,17 +38,14 @@ export const menuController = {
             return addedItem;
         } catch (error) {
             console.log(error);
-            if (error.code === 11000)
-                throw new APIError(BAD_REQUEST, "This item already exists in the menu.");
-
-            else if (error.name === "ValidationError") {
+            if (error.name === "ValidationError") {
                 const message = Object.values(error.errors).map(val => val.message);
                 throw new APIError(BAD_REQUEST, message);
             }
 
             else if (error instanceof APIError) throw error;
 
-            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
+            else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
     },
 
@@ -76,17 +73,14 @@ export const menuController = {
             return addedBundle;
 
         } catch (error) {
-            if (error.code === 11000)
-                throw new APIError(BAD_REQUEST, "This bundle already exists in the menu.");
-
-            else if (error.name === "ValidationError") {
+            if (error.name === "ValidationError") {
                 const message = Object.values(error.errors).map(val => val.message);
                 throw new APIError(BAD_REQUEST, message);
             }
 
             else if (error instanceof APIError) throw error;
 
-            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
+            else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
     },
 
@@ -97,7 +91,7 @@ export const menuController = {
 
         } catch (error) {
             if (error instanceof APIError) throw error;
-            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
+            else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
     },
 
@@ -115,7 +109,7 @@ export const menuController = {
             console.log(error)
             if (error instanceof APIError) throw error;
 
-            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
+            else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
     },
 
@@ -133,7 +127,7 @@ export const menuController = {
             console.log(error)
             if (error instanceof APIError) throw error;
 
-            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
+            else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
     },
 
@@ -146,7 +140,7 @@ export const menuController = {
             console.log(error)
             if (error instanceof APIError) throw error;
 
-            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
+            else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
     },
 
@@ -159,7 +153,7 @@ export const menuController = {
             console.log(error)
             if (error instanceof APIError) throw error;
 
-            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
+            else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
     },
 }

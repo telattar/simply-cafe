@@ -1,5 +1,5 @@
 import APIError from "../classes/APIError.js";
-import { BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, UNAUTHORIZED } from "../constants/statusCode.js";
+import { BAD_REQUEST, INTERNAL_ERROR_MESSAGE, INTERNAL_SERVER_ERROR, NOT_FOUND, UNAUTHORIZED } from "../constants/statusCode.js";
 import { CUSTOMER } from "../constants/userTypes.js";
 import { Users } from "../models/users.js";
 import bcrypt from 'bcrypt';
@@ -26,11 +26,11 @@ export const authenticationController = {
         } catch (error) {
             console.log(error);
             if (error instanceof APIError) throw error;
-            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
+            else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
     },
 
-    
+
     /**
     *Sign Up function, registers a new user in the system.
     * @param {string} username - The username of the new user. Should be unique.
@@ -72,13 +72,13 @@ export const authenticationController = {
 
             // check for validation errors.
             else if (error.name === "ValidationError") {
-                const message = Object.values(error.errors).map(val => val.message);                
+                const message = Object.values(error.errors).map(val => val.message);
                 throw new APIError(BAD_REQUEST, message);
             }
 
             else if (error instanceof APIError) throw error;
 
-            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
+            else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
     }
 }

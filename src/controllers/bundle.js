@@ -1,5 +1,5 @@
 import APIError from "../classes/APIError.js";
-import { BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND } from "../constants/statusCode.js";
+import { BAD_REQUEST, INTERNAL_ERROR_MESSAGE, INTERNAL_SERVER_ERROR, NOT_FOUND } from "../constants/statusCode.js";
 import { Bundles, bundleValidationSchema } from "../models/bundles.js"
 import { Items } from "../models/items.js";
 
@@ -47,7 +47,7 @@ export const bundleController = {
 
             else if (error instanceof APIError) throw error;
 
-            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
+            else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
     },
 
@@ -62,7 +62,7 @@ export const bundleController = {
         } catch (error) {
             if (error instanceof APIError) throw error;
 
-            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
+            else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
     },
 
@@ -86,7 +86,7 @@ export const bundleController = {
 
             else if (error instanceof APIError) throw error;
 
-            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
+            else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
     },
 
@@ -100,7 +100,7 @@ export const bundleController = {
         } catch (error) {
             if (error instanceof APIError) throw error;
 
-            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
+            else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
     }
 }
