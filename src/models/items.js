@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import Joi, { number, required } from "joi";
-import { BAKERY, CAKE, COFFEE, REFRESHER, SODA_CAN, TEA, WATER } from "../constants/menuItems";
+import Joi from "joi";
+import { BAKERY, CAKE, COFFEE, REFRESHER, SODA_CAN, TEA, WATER } from "../constants/menuItems.js";
 
 export const itemSchema = new mongoose.Schema({
     itemType: {
@@ -9,7 +9,8 @@ export const itemSchema = new mongoose.Schema({
     },
     itemName: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     price: {
         type: Number,
@@ -28,4 +29,4 @@ export const itemValidationSchema = Joi.object({
     description: Joi.string().min(3).max(200).required()
 });
 
-export const Items = mongoose.model('items', ItemSchema);
+export const Items = mongoose.model('items', itemSchema);

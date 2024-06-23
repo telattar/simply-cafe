@@ -72,16 +72,13 @@ export const authenticationController = {
 
             // check for validation errors.
             else if (error.name === "ValidationError") {
-                let message = "";
-                Object.keys(error.errors).forEach((key) => {
-                    message += error.errors[key].message + " ";
-                });
+                const message = Object.values(error.errors).map(val => val.message);                
                 throw new APIError(BAD_REQUEST, message);
             }
 
             else if (error instanceof APIError) throw error;
 
-            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Error.");
+            else throw new APIError(INTERNAL_SERVER_ERROR, "Internal Server Error.");
         }
     }
 }

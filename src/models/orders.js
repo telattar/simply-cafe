@@ -3,6 +3,7 @@ import Joi from "joi";
 import { Users } from "./users";
 import { Menu, menuSchema } from "./menu";
 import { CARD, CASH, INSTAPAY } from "../constants/paymentMethod";
+import { PREPARING, orderStatus } from "../constants/orderStatus";
 
 const orderSchema = new mongoose.Schema({
     customerId: {
@@ -31,6 +32,12 @@ const orderSchema = new mongoose.Schema({
         type: String,
         enum: [CASH, CARD, INSTAPAY],
         required: true
+    },
+    status: {
+        type: String,
+        enum: [...orderStatus],
+        required: true,
+        default: PREPARING
     }
 });
 
@@ -40,6 +47,7 @@ export const orderValidationSchema = Joi.object({
     orderedItems: Joi.array().items(Joi.object().required()),
     totalPrice: Joi.number().min(0).required(),
     comment: Joi.string().allow(""),
-    paymentMethod: Joi.string().valid(CASH, CARD, INSTAPAY).required()
+    paymentMethod: Joi.string().valid(CASH, CARD, INSTAPAY).required(),
+    status: Joi.string().valid([...orderStatus]).required().default(PREPARING)
 });
 export const Bundles = mongoose.model('orders', orderSchema);
