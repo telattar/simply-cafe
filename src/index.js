@@ -7,13 +7,14 @@ import requireAuth from "./middleware/authMiddleware.js";
 import cookieParser from "cookie-parser";
 import itemRouter from "./routers/item.js";
 import bundleRouter from "./routers/bundles.js";
+import menuRouter from "./routers/menu.js";
 
 config();
 const mongoURI = process.env.mongoURI;
 const app = express();
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({
-    extended: true
+  extended: true
 }));
 app.use(bodyParser.json());
 
@@ -33,3 +34,4 @@ mongoose.connect(mongoURI)
 app.use("/", authRouter);
 app.use("/item", requireAuth, itemRouter);
 app.use("/bundle", requireAuth, bundleRouter);
+app.use("/menu", requireAuth, menuRouter);

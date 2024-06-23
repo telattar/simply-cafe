@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
-import Joi, { boolean } from "joi";
-import { itemSchema } from "./items";
-import { bundleSchema } from "./bundles";
+import Joi from "joi";
+import { Items, itemSchema } from "./items.js";
+import { Bundles, bundleSchema } from "./bundles.js";
 
 
-const BUNDLE = "Bundle";
-const ITEM = "Item";
+export const BUNDLE = "Bundle";
+export const ITEM = "Item";
 
 export const menuSchema = new mongoose.Schema({
     type: {
@@ -14,10 +14,12 @@ export const menuSchema = new mongoose.Schema({
         required: true
     },
     bundle: {
-        type: bundleSchema
+        type: bundleSchema,
+        ref: Bundles,
     },
     item: {
-        type: itemSchema
+        type: itemSchema,
+        ref: Items,
     },
     availability: {
         type: Boolean,
@@ -28,21 +30,20 @@ export const menuSchema = new mongoose.Schema({
         required: true,
         default: 0
     }
- });
+});
 
- export const menuValidationSchema = Joi.object({
-    menuItemName: Joi.string().min(2).required(),
-    type: Joi.string().valid([BUNDLE, ITEM]).required(),
+export const menuValidationSchema = Joi.object({
+    type: Joi.string().valid(BUNDLE, ITEM).required(),
     bundle: Joi.when('type', {
         is: BUNDLE,
-        then: bundleSchema.required(),
+        then: Joi.required(),
     }),
     item: Joi.when('type', {
         is: ITEM,
-        then: itemSchema.required(),
+        then: Joi.required(),
     }),
     availability: Joi.boolean().required(),
-    stockCount: Joi.number().required().default(0)
+    stockCount: Joi.number().required().min(0).default(0)
 });
 
 export const Menu = mongoose.model('menu', menuSchema);
