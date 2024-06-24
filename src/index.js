@@ -11,7 +11,7 @@ import menuRouter from "./routers/menu.js";
 import orderRouter from "./routers/order.js";
 
 config();
-const mongoURI = process.env.mongoURI;
+const currentURI = process.env.TEST ? process.env.testURI : process.env.mongoURI;
 const app = express();
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({
@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 
 
 const port = process.env.PORT || "8000";
-mongoose.connect(mongoURI)
+mongoose.connect(currentURI)
   .then(() => {
     console.log("MongoDB is now connected!")
     // Starting server
@@ -37,3 +37,4 @@ app.use("/item", requireAuth, itemRouter);
 app.use("/bundle", requireAuth, bundleRouter);
 app.use("/menu", requireAuth, menuRouter);
 app.use("/order", requireAuth, orderRouter);
+export default app;
