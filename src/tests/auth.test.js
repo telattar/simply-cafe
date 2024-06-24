@@ -18,7 +18,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
     await mongoose.disconnect();
-    process.env.TEST = 'false';
+    delete process.env.TEST;
 });
 
 
@@ -78,6 +78,7 @@ describe("Testing unsuccessful signup", () => {
         });
 
         expect(response.status).toBe(BAD_REQUEST);
+        expect(response.body.message).toContain("username");
     });
     test("It should not allow signup without required fields such as first and last names", async () => {
         const response = await req.post('/signup').send({
@@ -88,6 +89,7 @@ describe("Testing unsuccessful signup", () => {
         });
 
         expect(response.status).toBe(BAD_REQUEST);
+        expect(response.body.message).toContain("firstName");
     });
     test("It should not allow signup without a properly written email", async () => {
         const response = await req.post('/signup').send({
@@ -98,6 +100,7 @@ describe("Testing unsuccessful signup", () => {
         });
 
         expect(response.status).toBe(BAD_REQUEST);
+        expect(response.body.message).toContain("email");
     });
 
     test("It should not allow signup using a weak password", async () => {
@@ -111,6 +114,7 @@ describe("Testing unsuccessful signup", () => {
         });
 
         expect(response.status).toBe(BAD_REQUEST);
+        expect(response.body.message).toContain("password");
     });
 
 });
