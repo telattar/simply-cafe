@@ -1,6 +1,6 @@
 import express from 'express';
 import { ADMIN, MANAGER } from '../constants/userTypes.js';
-import { CREATED, FORBIDDEN, NO_CONTENT, OK } from '../constants/statusCode.js';
+import { BAD_REQUEST, CREATED, FORBIDDEN, NO_CONTENT, OK } from '../constants/statusCode.js';
 import { bundleController } from '../controllers/bundle.js';
 
 const bundleRouter = new express.Router();
@@ -57,7 +57,7 @@ bundleRouter.delete('/deleteBundle', async (req, res) => {
         const { bundleId } = req.query;
         await bundleController.deleteBundle({ bundleId });
 
-        return res.status(OK).json({ message: "Bundle deleted successfully" });
+        return res.status(OK).json({ message: "Bundle deleted successfully." });
 
     } catch (error) {
         return res.status(error.code).json({ message: error.message });

@@ -15,10 +15,13 @@ export const bundleSchema = new mongoose.Schema({
     }],
     priceBeforeDiscount: {
         type: Number,
+        min: 0,
         required: true
     },
     discount: {
         type: Number,
+        min: 0,
+        max: 100,
         required: true
     },
     priceAfterDiscount: {
@@ -27,7 +30,6 @@ export const bundleSchema = new mongoose.Schema({
     },
     limitedEdition: {
         type: Boolean,
-        required: true,
         default: false
     },
     expiresOn: {
@@ -35,7 +37,7 @@ export const bundleSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required:true
+        required: true
     }
 });
 
@@ -44,12 +46,12 @@ export const bundleValidationSchema = Joi.object({
     items: Joi.array().min(2).required(),
     priceBeforeDiscount: Joi.number().min(1).max(1000).required(),
     discount: Joi.number().min(1).max(100).required(),
-    priceAfterDiscount: Joi.number().min(1).max(1000).required(),
-    limitedEdition: Joi.boolean().default(false).required(),
+    priceAfterDiscount: Joi.number().min(0).max(1000).required(),
+    limitedEdition: Joi.boolean().default(false),
     expiresOn: Joi.when('limitedEdition', {
         is: true,
-        then: Joi.date().required()
-        }
+        then: Joi.date().min(Date.now()).required()
+    }
     ),
     description: Joi.string().min(3).max(200).required()
 });
