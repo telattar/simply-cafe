@@ -1,7 +1,7 @@
 import express from 'express';
 import { BUNDLE, ITEM } from '../models/menu.js';
 import { menuController } from '../controllers/menu.js';
-import { BAD_REQUEST, FORBIDDEN, NO_CONTENT, OK } from '../constants/statusCode.js';
+import { BAD_REQUEST, CREATED, FORBIDDEN, NO_CONTENT, OK } from '../constants/statusCode.js';
 import { ADMIN, CHEF, MANAGER } from '../constants/userTypes.js';
 
 const menuRouter = express.Router();
@@ -12,7 +12,7 @@ menuRouter.post('/addToMenu', async (req, res) => {
         const { type, availability, stockCount } = req.body;
 
         if (!type)
-            return res.status(BAD_REQUEST).json({ message: "please specify whether you're adding an Item or a Bundle." });
+            return res.status(BAD_REQUEST).json({ message: "Please specify whether you're adding an Item or a Bundle." });
 
         if (type === BUNDLE) {
             if (![ADMIN, MANAGER].includes(userType))
@@ -20,7 +20,7 @@ menuRouter.post('/addToMenu', async (req, res) => {
 
             const { bundleId } = req.body;
             const addedBundle = await menuController.addBundle({ bundleId, availability, stockCount });
-            return res.status(OK).json(addedBundle);
+            return res.status(CREATED).json({ addedBundle });
         }
 
         else if (type === ITEM) {
@@ -29,7 +29,7 @@ menuRouter.post('/addToMenu', async (req, res) => {
 
             const { itemId } = req.body;
             const addedItem = await menuController.addItem({ itemId, availability, stockCount });
-            return res.status(OK).json({ addedItem });
+            return res.status(CREATED).json({ addedItem });
         }
     } catch (error) {
         console.log(error);
@@ -37,7 +37,7 @@ menuRouter.post('/addToMenu', async (req, res) => {
     }
 });
 
-menuRouter.get('/getMenu', async (res) => {
+menuRouter.get('/getMenu', async (req, res) => {
     try {
         const menu = await menuController.getMenu();
         return res.status(OK).json({ menu });
@@ -79,7 +79,7 @@ menuRouter.patch('/updateStock', async (req, res) => {
 menuRouter.delete("/removeFromMenu", async (req, res) => {
     try {
         const { userType } = req.user;
-        const { type, stockCount } = req.body;
+        const { type } = req.body;
 
         if (!type)
             return res.status(BAD_REQUEST).json({ message: "please specify whether you're removing an Item or a Bundle." });
@@ -90,7 +90,7 @@ menuRouter.delete("/removeFromMenu", async (req, res) => {
 
             const { bundleId } = req.body;
             await menuController.removeBundleFromMenu({ bundleId });
-            return res.status(OK).json({ message: "Item removed from menu successfully." });
+            return res.status(OK).json({ message: "Bundle removed from menu successfully." });
         }
 
         else if (type === ITEM) {

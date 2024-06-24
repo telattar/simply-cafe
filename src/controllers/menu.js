@@ -73,6 +73,7 @@ export const menuController = {
             return addedBundle;
 
         } catch (error) {
+            console.log(error);
             if (error.name === "ValidationError") {
                 const message = Object.values(error.errors).map(val => val.message);
                 throw new APIError(BAD_REQUEST, message);
@@ -90,6 +91,7 @@ export const menuController = {
             return menu;
 
         } catch (error) {
+            console.log(error);
             if (error instanceof APIError) throw error;
             else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
@@ -97,6 +99,9 @@ export const menuController = {
 
     async updateItemStock({ itemId, stockCount }) {
         try {
+            if (stockCount === undefined)
+                throw new APIError(BAD_REQUEST, "Please provide a stock count.")
+
             const updatedMenuItem = await Menu.updateOne({ 'item._id': itemId }, { stockCount }).lean();
 
             if (updatedMenuItem.matchedCount === 0)
@@ -115,6 +120,9 @@ export const menuController = {
 
     async updateBundleStock({ bundleId, stockCount }) {
         try {
+            if (stockCount === undefined)
+                throw new APIError(BAD_REQUEST, "Please provide a stock count.")
+
             const updatedMenuItem = await Menu.updateOne({ 'bundle._id': bundleId }, { stockCount }).lean();
 
             if (updatedMenuItem.matchedCount === 0)
@@ -135,7 +143,7 @@ export const menuController = {
         try {
             const removedItem = await Menu.deleteOne({ 'item._id': itemId }).lean();
             if (removedItem.deletedCount === 0)
-                throw new APIError(BAD_REQUEST, "No such item with this ID.");
+                throw new APIError(NOT_FOUND, "No such item with this ID.");
         } catch (error) {
             console.log(error)
             if (error instanceof APIError) throw error;
@@ -146,9 +154,9 @@ export const menuController = {
 
     async removeBundleFromMenu({ bundleId }) {
         try {
-            const removedBundle = await Menu.deleteOne({ 'item._id': bundleId }).lean();
+            const removedBundle = await Menu.deleteOne({ 'bundle._id': bundleId }).lean();
             if (removedBundle.deletedCount === 0)
-                throw new APIError(BAD_REQUEST, "No such item with this ID.");
+                throw new APIError(NOT_FOUND, "No such bundle with this ID.");
         } catch (error) {
             console.log(error)
             if (error instanceof APIError) throw error;

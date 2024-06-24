@@ -1,6 +1,6 @@
 import express from 'express';
 import { ADMIN, CHEF, CUSTOMER } from '../constants/userTypes.js';
-import { FORBIDDEN, NO_CONTENT, OK } from '../constants/statusCode.js';
+import { CREATED, FORBIDDEN, NO_CONTENT, OK } from '../constants/statusCode.js';
 import { orderController } from '../controllers/order.js';
 
 const orderRouter = new express.Router();
@@ -15,7 +15,7 @@ orderRouter.post('/newOrder', async (req, res) => {
             return res.status(FORBIDDEN).json({ message: "Only a customer can make an order." });
 
         const newOrder = await orderController.createOrder({ customerId, orderedItemIds, comment, paymentMethod });
-        return res.status(OK).json({ newOrder });
+        return res.status(CREATED).json({ newOrder });
     } catch (error) {
         return res.status(error.code).json({ message: error.message });
     }

@@ -10,7 +10,6 @@ export const itemSchema = new mongoose.Schema({
     itemName: {
         type: String,
         required: true,
-        unique: true
     },
     price: {
         type: Number,
@@ -28,5 +27,6 @@ export const itemValidationSchema = Joi.object({
     price: Joi.number().min(1).max(200).required(),
     description: Joi.string().min(3).max(200).required()
 });
+itemSchema.index({ itemName: 1 }, { unique: true });
 
 export const Items = mongoose.model('items', itemSchema);

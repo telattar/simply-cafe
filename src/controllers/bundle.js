@@ -68,7 +68,23 @@ export const bundleController = {
 
     async updateBundle({ bundleId, discount, description, limitedEdition, expiresOn }) {
         try {
-            const updatedBundle = await Bundles.updateOne({ _id: bundleId }, { discount, description, limitedEdition, expiresOn }).lean();
+
+            const bundle = await Bundles.findOne({ _id: bundleId }).lean();
+            if (!bundle)
+                throw new APIError(NOT_FOUND, "No such bundle exists.");
+
+
+            bundle.discount = discount ? discount : bundle.discount;
+            bundle.priceAfterDiscount = discount ? bundle.priceBeforeDiscount * discount / 100 : bundle.priceAfterDiscount;
+            bundle.description = description ? description : bundle.description;
+            bundle.limitedEdition = limitedEdition ? limitedEdition : bundle.limitedEdition;
+            bundle.expiresOn = expiresOn ? expiresOn : bundle.expiresOn;
+
+            const { error } = bundleValidationSchema.validate(bundle, { stripUnknown: true });
+            if (error)
+                throw new APIError(BAD_REQUEST, error.details.map(detail => detail.message).join(', '));
+
+            const updatedBundle = await Bundles.updateOne({ _id: bundleId }, bundle).lean();
             if (updatedBundle.matchedCount === 0)
                 throw new APIError(NOT_FOUND, "No such bundle with this ID");
 
