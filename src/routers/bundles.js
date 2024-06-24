@@ -1,6 +1,6 @@
 import express from 'express';
 import { ADMIN, MANAGER } from '../constants/userTypes.js';
-import { FORBIDDEN, NO_CONTENT, OK } from '../constants/statusCode.js';
+import { CREATED, FORBIDDEN, NO_CONTENT, OK } from '../constants/statusCode.js';
 import { bundleController } from '../controllers/bundle.js';
 
 const bundleRouter = new express.Router();
@@ -13,7 +13,7 @@ bundleRouter.post('/createBundle', async (req, res) => {
         const { bundleName, itemIds, discount, limitedEdition, expiresOn, description } = req.body;
         const newBundle = await bundleController.createNewBundle({ bundleName, itemIds, discount, limitedEdition, expiresOn, description });
 
-        return res.status(OK).json({ newBundle });
+        return res.status(CREATED).json({ newBundle });
     } catch (error) {
         return res.status(error.code).json({ message: error.message });
     }

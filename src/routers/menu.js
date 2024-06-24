@@ -1,7 +1,7 @@
 import express from 'express';
 import { BUNDLE, ITEM } from '../models/menu.js';
 import { menuController } from '../controllers/menu.js';
-import { BAD_REQUEST, FORBIDDEN, NO_CONTENT, OK } from '../constants/statusCode.js';
+import { BAD_REQUEST, CREATED, FORBIDDEN, NO_CONTENT, OK } from '../constants/statusCode.js';
 import { ADMIN, CHEF, MANAGER } from '../constants/userTypes.js';
 
 const menuRouter = express.Router();
@@ -29,7 +29,7 @@ menuRouter.post('/addToMenu', async (req, res) => {
 
             const { itemId } = req.body;
             const addedItem = await menuController.addItem({ itemId, availability, stockCount });
-            return res.status(OK).json({ addedItem });
+            return res.status(CREATED).json({ addedItem });
         }
     } catch (error) {
         console.log(error);
