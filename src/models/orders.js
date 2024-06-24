@@ -40,11 +40,6 @@ export const orderSchema = new mongoose.Schema({
     }
 });
 
-orderSchema.index(
-    { 'orderedItems.bundle.bundleName': 1 },
-    { unique: false }
-);
-
 export const orderValidationSchema = Joi.object({
     customerId: Joi.string().hex().length(24).required(), // object ID validation
     date: Joi.date().required(),

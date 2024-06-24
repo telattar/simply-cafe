@@ -47,3 +47,4 @@ export const menuValidationSchema = Joi.object({
 });
 
 export const Menu = mongoose.model('menu', menuSchema);
+

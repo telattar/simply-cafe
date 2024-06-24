@@ -12,16 +12,19 @@ config();
 // to use the same agent in all tests.
 const req = request.agent(app);
 var itemIds;
+process.env.TEST = 'true';
+
 beforeAll(async () => {
-    //s et the TEST variable to true in order to use the test URI
-    process.env.TEST = 'true';
+    // close the production database
+    if (mongoose.connection.readyState !== 0)
+        await mongoose.disconnect();
+
     await mongoose.connect(process.env.testURI);
     itemIds = await Items.find().limit(2).select('_id');
 });
 
 afterAll(async () => {
     await mongoose.disconnect();
-    delete process.env.TEST;
 });
 
 

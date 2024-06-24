@@ -12,14 +12,15 @@ config();
 const req = request.agent(app);
 
 beforeAll(async () => {
-    //s et the TEST variable to true in order to use the test URI
-    process.env.TEST = 'true';
+    // close the production database
+    if (mongoose.connection.readyState !== 0)
+        await mongoose.disconnect();
+
     await mongoose.connect(process.env.testURI);
 });
 
 afterAll(async () => {
     await mongoose.disconnect();
-    delete process.env.TEST;
 });
 
 

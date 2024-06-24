@@ -41,7 +41,6 @@ export const userSchema = new mongoose.Schema({
         trim: true,
         unique: true,
         lowercase: true,
-        unique: true,
     },
     gender: {
         type: String,
