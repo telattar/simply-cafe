@@ -51,12 +51,12 @@ describe("POST /menu/addToMenu", () => {
                 type: ITEM,
                 itemId,
                 availability: true,
-                stockCount: 10
+                stockCount: 100
             });
 
             expect(response.status).toBe(CREATED);
             expect(response.body.addedItem.type).toBe(ITEM);
-            expect(response.body.addedItem.stockCount).toBe(10);
+            expect(response.body.addedItem.stockCount).toBe(100);
         });
 
         test("A manager can add a bundle to the menu", async () => {

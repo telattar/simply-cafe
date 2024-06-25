@@ -1,6 +1,6 @@
 import APIError from "../classes/APIError.js"
 import { CANCELLED, COMPLETE, PREPARING } from "../constants/orderStatus.js";
-import { BAD_REQUEST, INTERNAL_ERROR_MESSAGE, INTERNAL_SERVER_ERROR, NOT_FOUND } from "../constants/statusCode.js";
+import { BAD_REQUEST, FORBIDDEN, INTERNAL_ERROR_MESSAGE, INTERNAL_SERVER_ERROR, NOT_FOUND } from "../constants/statusCode.js";
 import { ITEM, Menu } from "../models/menu.js";
 import { Orders, orderValidationSchema } from "../models/orders.js";
 
@@ -19,7 +19,7 @@ export const orderController = {
 
             var totalPrice = 0;
             orderedItems.forEach(menuItem => {
-                totalPrice += menuItem.type === ITEM ? menuItem.item.price : menuItem.priceAfterDiscount;
+                totalPrice += menuItem.type === ITEM ? menuItem.item.price : menuItem.bundle.priceAfterDiscount;
             });
 
             const date = Date.now();
@@ -65,12 +65,28 @@ export const orderController = {
         }
     },
 
+    async viewMyOrder({ customerId, orderId }) {
+        try {
+            const order = await Orders.findOne({ _id: orderId }).lean();
+            if (!order)
+                throw new APIError(NOT_FOUND, "No such order with this ID.");
+
+            if (order.customerId.toString() !== customerId)
+                throw new APIError(FORBIDDEN, "You can not view the details of an order that is not yours.");
+
+            return order;
+        } catch (error) {
+            if (error instanceof APIError) throw error;
+            else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
+        }
+    },
     async cancelOrder({ customerId, orderId }) {
         try {
-            //findOneAndUpdate returns the document BEFORE update
-            const { status, orderedItems } = await Orders.findOneAndUpdate({ _id: orderId, customerId }, { status: CANCELLED }, { new: false }).lean();
-            if (!orderedItems)
+            const order = await Orders.findOneAndUpdate({ _id: orderId, customerId }, { status: CANCELLED }, { new: false }).lean();
+            if (!order)
                 throw new APIError(NOT_FOUND, "This order does not exist OR was not ordered by the currently logged in user.");
+
+            const { status, orderedItems } = order;
 
             if (status !== PREPARING)
                 throw new APIError(BAD_REQUEST, `You can not cancel an order which status is ${status}.`);
@@ -97,8 +113,11 @@ export const orderController = {
 
     async completeOrder({ orderId }) {
         try {
-            const { status } = await Orders.findOne({ _id: orderId }).lean();
+            const order = await Orders.findOne({ _id: orderId }).lean();
+            if (!order)
+                throw new APIError(NOT_FOUND, "This order does not exist.");
 
+            const { status } = order;
             if (status !== PREPARING)
                 throw new APIError(BAD_REQUEST, `You can not complete an order which status is ${status}.`);
 

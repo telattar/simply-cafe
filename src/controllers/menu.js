@@ -100,9 +100,12 @@ export const menuController = {
     async updateItemStock({ itemId, stockCount }) {
         try {
             if (stockCount === undefined)
-                throw new APIError(BAD_REQUEST, "Please provide a stock count.")
+                throw new APIError(BAD_REQUEST, "Please provide a stock count.");
+            if (stockCount < 0)
+                throw new APIError(BAD_REQUEST, "Please provide a stock count that is greater than zero.");
 
-            const updatedMenuItem = await Menu.updateOne({ 'item._id': itemId }, { stockCount }).lean();
+            const availability = stockCount > 0 ? true : false;
+            const updatedMenuItem = await Menu.updateOne({ 'item._id': itemId }, { stockCount, availability }).lean();
 
             if (updatedMenuItem.matchedCount === 0)
                 throw new APIError(NOT_FOUND, "No item found with this Id.");
@@ -122,8 +125,11 @@ export const menuController = {
         try {
             if (stockCount === undefined)
                 throw new APIError(BAD_REQUEST, "Please provide a stock count.")
+            if (stockCount < 0)
+                throw new APIError(BAD_REQUEST, "Please provide a stock count that is greater than zero.");
 
-            const updatedMenuItem = await Menu.updateOne({ 'bundle._id': bundleId }, { stockCount }).lean();
+            const availability = stockCount > 0 ? true : false;
+            const updatedMenuItem = await Menu.updateOne({ 'bundle._id': bundleId }, { stockCount, availability }).lean();
 
             if (updatedMenuItem.matchedCount === 0)
                 throw new APIError(NOT_FOUND, "No bundle found with this Id.");

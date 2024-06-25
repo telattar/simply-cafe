@@ -7,7 +7,6 @@ const orderRouter = new express.Router();
 
 orderRouter.post('/newOrder', async (req, res) => {
     try {
-        console.log(req.user);
         const { userId: customerId, userType } = req.user;
         const { orderedItemIds, comment, paymentMethod } = req.body;
 
@@ -16,6 +15,23 @@ orderRouter.post('/newOrder', async (req, res) => {
 
         const newOrder = await orderController.createOrder({ customerId, orderedItemIds, comment, paymentMethod });
         return res.status(CREATED).json({ newOrder });
+    } catch (error) {
+        return res.status(error.code).json({ message: error.message });
+    }
+});
+
+orderRouter.get('/viewMyOrder', async (req, res) => {
+    try {
+        const { userId: customerId, userType } = req.user;
+
+        if (userType !== CUSTOMER)
+            return res.status(FORBIDDEN).json({ message: "Only a customer can view their order." });
+
+        const { orderId } = req.query;
+        const order = await orderController.viewMyOrder({ customerId, orderId });
+
+        return res.status(OK).json({ order });
+
     } catch (error) {
         return res.status(error.code).json({ message: error.message });
     }
