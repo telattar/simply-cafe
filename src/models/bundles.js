@@ -54,6 +54,5 @@ export const bundleValidationSchema = Joi.object({
     ),
     description: Joi.string().min(3).max(200).required()
 });
-bundleSchema.index({ bundleName: 1 }, { unique: true });
 
 export const Bundles = mongoose.model('bundles', bundleSchema);

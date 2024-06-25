@@ -24,7 +24,7 @@ afterAll(async () => {
 });
 
 
-describe("/item/createItem", () => {
+describe("POST /item/createItem", () => {
     describe("Testing successful item creation", () => {
         test("A logged in chef can create an item", async () => {
             // log in as chef: i have a record of a chef's username and password in my env file.
@@ -129,7 +129,7 @@ describe("/item/createItem", () => {
     });
 });
 
-describe("/item/getItem", () => {
+describe("GET /item/getItem", () => {
     describe("Testing successful item read", () => {
         test("A chef can view all item details", async () => {
             // get some item id
@@ -175,7 +175,7 @@ describe("/item/getItem", () => {
 });
 
 
-describe("/item/updateItem", () => {
+describe("PATCH /item/updateItem", () => {
     describe("Testing successful item update", () => {
         test("A chef can update item details", async () => {
             // get some item id
@@ -237,7 +237,7 @@ describe("/item/updateItem", () => {
 });
 
 
-describe("/item/deleteItem", () => {
+describe("DELETE /item/deleteItem", () => {
     describe("Testing successful item deletion", () => {
         test("A chef can delete an item", async () => {
             //get some item id
