@@ -37,7 +37,7 @@ afterAll(async () => {
     await mongoose.disconnect();
 });
 
-describe("/menu/addToMenu", () => {
+describe("POST /menu/addToMenu", () => {
     describe("Testing successful menu additions", () => {
         test("A chef can add an item to the menu", async () => {
             const { _id: itemId } = await createFakeItem();
@@ -193,7 +193,7 @@ describe("/menu/addToMenu", () => {
     });
 });
 
-describe("/menu/getMenu", () => {
+describe("GET /menu/getMenu", () => {
     test.concurrent("A logged in user can see the menu", async () => {
         await req.post("/login").send({
             username: process.env.TEST_CHEF_USERNAME,
@@ -206,7 +206,7 @@ describe("/menu/getMenu", () => {
     });
 });
 
-describe("/menu/updateStock", () => {
+describe("PATCH /menu/updateStock", () => {
     describe("Testing successful menu stock updates", () => {
 
         test("A manager can update a bundle's stock", async () => {
@@ -299,8 +299,7 @@ describe("/menu/updateStock", () => {
     });
 });
 
-
-describe("/menu/removeFromMenu", () => {
+describe("DELETE /menu/removeFromMenu", () => {
     describe("Testing successful removal from menu", () => {
         test("A manager removes a bundle from the menu", async () => {
             await req.post("/login").send({

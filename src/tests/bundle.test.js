@@ -28,7 +28,7 @@ afterAll(async () => {
 });
 
 
-describe("/bundle/createBundle", () => {
+describe("POST /bundle/createBundle", () => {
 
     describe("Testing successful bundle creation", () => {
         test("A manager can create a bundle of items", async () => {
@@ -106,7 +106,7 @@ describe("/bundle/createBundle", () => {
         });
 
         test("Creating a bundle with no items", async () => {
-            const bundleName = faker.string.alpha();
+            const bundleName = faker.string.alpha(12);
             const discount = faker.number.int({ min: 2, max: 100 });
             const limitedEdition = true;
             const expiresOn = faker.date.future();
@@ -163,7 +163,7 @@ describe("/bundle/createBundle", () => {
     });
 
     test("Creating a bundle with missing fields", async () => {
-        const bundleName = faker.string.alpha();
+        const bundleName = faker.string.alpha(12);
         const discount = faker.number.int({ max: 100 });
 
         const response = await req.post("/bundle/createBundle").send({
@@ -178,7 +178,7 @@ describe("/bundle/createBundle", () => {
 });
 
 
-describe("/bundle/getBundle", () => {
+describe("GET /bundle/getBundle", () => {
     test("A manager can read a bundle's details", async () => {
         const { _id } = await Bundles.findOne({}).lean();
 
@@ -206,7 +206,7 @@ describe("/bundle/getBundle", () => {
     });
 });
 
-describe("/bundle/updateBundle", () => {
+describe("PATCH /bundle/updateBundle", () => {
     test("A manager can update a bundle's details", async () => {
         const { _id } = await Bundles.findOne({}).lean();
 
@@ -268,7 +268,7 @@ describe("/bundle/updateBundle", () => {
     });
 });
 
-describe("/bundle/deleteBundle", () => {
+describe("DELETE /bundle/deleteBundle", () => {
     test("A manager can delete a bundle", async () => {
         const { _id } = await Bundles.findOne({}).lean();
 
