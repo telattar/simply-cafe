@@ -32,7 +32,6 @@ menuRouter.post('/addToMenu', async (req, res) => {
             return res.status(CREATED).json({ addedItem });
         }
     } catch (error) {
-        console.log(error);
         return res.status(error.code).json({ message: error.message });
     }
 });

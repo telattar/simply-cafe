@@ -39,7 +39,6 @@ export const bundleController = {
 
             return newBundle;
         } catch (error) {
-            console.log(error);
 
             // check for validation errors.
             if (error.name === "ValidationError") {
@@ -94,7 +93,6 @@ export const bundleController = {
                 throw new APIError(BAD_REQUEST, "Bundle was not updated.");
 
         } catch (error) {
-            console.log(error)
 
             // check for validation errors.
             if (error.name === "ValidationError") {

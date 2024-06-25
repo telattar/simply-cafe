@@ -37,7 +37,6 @@ export const menuController = {
 
             return addedItem;
         } catch (error) {
-            console.log(error);
             if (error.name === "ValidationError") {
                 const message = Object.values(error.errors).map(val => val.message);
                 throw new APIError(BAD_REQUEST, message);
@@ -73,7 +72,6 @@ export const menuController = {
             return addedBundle;
 
         } catch (error) {
-            console.log(error);
             if (error.name === "ValidationError") {
                 const message = Object.values(error.errors).map(val => val.message);
                 throw new APIError(BAD_REQUEST, message);
@@ -91,7 +89,6 @@ export const menuController = {
             return menu;
 
         } catch (error) {
-            console.log(error);
             if (error instanceof APIError) throw error;
             else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
@@ -114,7 +111,6 @@ export const menuController = {
                 throw new APIError(BAD_REQUEST, "The stock count was not updated.");
 
         } catch (error) {
-            console.log(error)
             if (error instanceof APIError) throw error;
 
             else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
@@ -138,7 +134,6 @@ export const menuController = {
                 throw new APIError(BAD_REQUEST, "The stock count was not updated.");
 
         } catch (error) {
-            console.log(error)
             if (error instanceof APIError) throw error;
 
             else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
@@ -151,7 +146,6 @@ export const menuController = {
             if (removedItem.deletedCount === 0)
                 throw new APIError(NOT_FOUND, "No such item with this ID.");
         } catch (error) {
-            console.log(error)
             if (error instanceof APIError) throw error;
 
             else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
@@ -164,7 +158,6 @@ export const menuController = {
             if (removedBundle.deletedCount === 0)
                 throw new APIError(NOT_FOUND, "No such bundle with this ID.");
         } catch (error) {
-            console.log(error)
             if (error instanceof APIError) throw error;
 
             else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
