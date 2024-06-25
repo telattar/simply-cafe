@@ -52,11 +52,11 @@ export const itemController = {
 
     async updateItem({ itemId, itemName, price, description }) {
         try {
-            const existingItemName = await Items.findOne({ itemName }).lean();
+            const item = await Items.findOne({ itemName }).lean();
 
             // sometimes people would update the item's name to be its current item name.....
             // if there is another item with this item name, throw the error
-            if (existingItemName._id !== itemId)
+            if (item && item._id.toString() !== itemId.toString())
                 throw new APIError(BAD_REQUEST, "This item name already exists.");
 
             const updatedItem = await Items.updateOne({ _id: itemId }, { itemName, price, description }).lean();

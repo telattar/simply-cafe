@@ -96,6 +96,8 @@ describe("Testing unsuccessful signup", () => {
         const response = await req.post('/signup').send({
             username: faker.string.alpha(10),
             password,
+            firstName: faker.lorem.word(),
+            lastName: faker.lorem.word(),
             email: faker.string.alpha(14),
             gender: FEMALE
         });
