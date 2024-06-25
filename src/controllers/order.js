@@ -49,7 +49,6 @@ export const orderController = {
 
             return order;
         } catch (error) {
-            console.log(error);
             if (error.code === 11000)
                 throw new APIError(BAD_REQUEST, "Duplicate key error.");
 
@@ -104,7 +103,6 @@ export const orderController = {
                 }]
             );
         } catch (error) {
-            console.log(error)
             if (error instanceof APIError) throw error;
 
             else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
@@ -129,7 +127,6 @@ export const orderController = {
                 throw new APIError(BAD_REQUEST, "The order status was not updated.");
 
         } catch (error) {
-            console.log(error);
             if (error instanceof APIError) throw error;
 
             else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);

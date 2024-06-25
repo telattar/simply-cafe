@@ -24,7 +24,6 @@ export const authenticationController = {
             // successful login
             return { userId: user._id, userType: user.userType };
         } catch (error) {
-            console.log(error);
             if (error instanceof APIError) throw error;
             else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }

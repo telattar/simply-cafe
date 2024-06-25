@@ -22,8 +22,6 @@ export const itemController = {
 
             return newItem;
         } catch (error) {
-            console.log(error)
-
             // check for validation errors.
             if (error.name === "ValidationError") {
                 const message = Object.values(error.errors).map(val => val.message);
@@ -67,8 +65,6 @@ export const itemController = {
                 throw new APIError(BAD_REQUEST, "The item was not updated.");
 
         } catch (error) {
-            console.log(error)
-
             // check for validation errors.
             if (error.name === "ValidationError") {
                 const message = Object.values(error.errors).map(val => val.message);

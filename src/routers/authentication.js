@@ -39,7 +39,6 @@ authRouter.post('/signUp', async (req, res) => {
         const user = await authenticationController.signUp({ username, password, firstName, lastName, email, gender });
         return res.status(CREATED).json({ user });
     } catch (error) {
-        console.log(error)
         return res.status(error.code).json({ message: error.message });
     }
 });
