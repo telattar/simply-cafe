@@ -5,6 +5,10 @@ import { Items, itemValidationSchema } from "../models/items.js"
 export const itemController = {
     async createItem({ itemType, itemName, price, description }) {
         try {
+            const existingItemName = await Items.findOne({ itemName }).lean();
+            if (existingItemName)
+                throw new APIError(BAD_REQUEST, "This item name already exists.");
+
             const { error } = itemValidationSchema.validate({ itemType, itemName, price, description });
             if (error)
                 throw new APIError(BAD_REQUEST, error.details.map(detail => detail.message).join(', '));
@@ -19,8 +23,6 @@ export const itemController = {
             return newItem;
         } catch (error) {
             console.log(error)
-            if (error.code === 11000)
-                throw new APIError(BAD_REQUEST, "This item name already exists.");
 
             // check for validation errors.
             if (error.name === "ValidationError") {
@@ -50,6 +52,12 @@ export const itemController = {
 
     async updateItem({ itemId, itemName, price, description }) {
         try {
+            const existingItemName = await Items.findOne({ itemName }).lean();
+
+            // sometimes people would update the item's name to be its current item name.....
+            // if there is another item with this item name, throw the error
+            if (existingItemName._id !== itemId)
+                throw new APIError(BAD_REQUEST, "This item name already exists.");
 
             const updatedItem = await Items.updateOne({ _id: itemId }, { itemName, price, description }).lean();
             if (updatedItem.matchedCount === 0)
@@ -60,11 +68,9 @@ export const itemController = {
 
         } catch (error) {
             console.log(error)
-            if (error.code === 11000)
-                throw new APIError(BAD_REQUEST, "This item name already exists.");
 
             // check for validation errors.
-            else if (error.name === "ValidationError") {
+            if (error.name === "ValidationError") {
                 const message = Object.values(error.errors).map(val => val.message);
                 throw new APIError(BAD_REQUEST, message);
             }

@@ -6,6 +6,10 @@ import { Items } from "../models/items.js";
 export const bundleController = {
     async createNewBundle({ bundleName, itemIds, discount, limitedEdition, expiresOn, description }) {
         try {
+            const existingBundleName = await Bundles.findOne({ bundleName }).lean();
+            if (existingBundleName)
+                throw new APIError(BAD_REQUEST, "There is already a bundle with this name.");
+
             const items = await Items.find({ _id: { $in: itemIds } });
 
             var priceBeforeDiscount = 0;
@@ -36,8 +40,6 @@ export const bundleController = {
             return newBundle;
         } catch (error) {
             console.log(error);
-            if (error.code === 11000)
-                throw new APIError(BAD_REQUEST, "There is already a bundle with this name.");
 
             // check for validation errors.
             if (error.name === "ValidationError") {
