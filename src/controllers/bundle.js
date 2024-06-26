@@ -2,15 +2,36 @@ import APIError from "../classes/APIError.js";
 import { BAD_REQUEST, INTERNAL_ERROR_MESSAGE, INTERNAL_SERVER_ERROR, NOT_FOUND } from "../constants/statusCode.js";
 import { Bundles, bundleValidationSchema } from "../models/bundles.js"
 import { Items } from "../models/items.js";
+import { Menu } from "../models/menu.js";
+
+// Only a manager can do CRUD operations to a bundle.
 
 export const bundleController = {
+    /**
+     * Create a new bundle.
+     * @param {string} bundleName - The name of the bundle. Should be Unique.
+     * @param {string[]} itemIds - The IDs of the items to be included in the bundle. They should all be in the items collection.
+     * No two bundles should contain the same items.
+     * @param {number} discount - The discount percentage for the bundle.
+     * @param {boolean} limitedEdition - Whether the bundle is a limited edition.
+     * @param {Date} expiresOn - The expiration date of the bundle. Should be a future date.
+     * @param {string} description - The description of the bundle.
+     * @returns {object} The created bundle object.
+     * @throws {APIError} If the bundle name already exists or if there are validation errors.
+     */
     async createNewBundle({ bundleName, itemIds, discount, limitedEdition, expiresOn, description }) {
         try {
-            const existingBundleName = await Bundles.findOne({ bundleName }).lean();
-            if (existingBundleName)
+            //check if the bundle name exists
+            var existsBundle = await Bundles.findOne({ bundleName }).lean();
+            if (existsBundle)
                 throw new APIError(BAD_REQUEST, "There is already a bundle with this name.");
 
             const items = await Items.find({ _id: { $in: itemIds } });
+            existsBundle = await Bundles.findOne({ items }).lean();
+
+            //check if some bundle has the exact same items
+            if (existsBundle)
+                throw new APIError(BAD_REQUEST, "There is already a bundle with the exact same items.");
 
             var priceBeforeDiscount = 0;
             items.forEach(item => {
@@ -52,6 +73,12 @@ export const bundleController = {
         }
     },
 
+    /**
+     * Get a bundle by ID.
+     * @param {string} bundleId - The ID of the bundle.
+     * @returns {object} The bundle object.
+     * @throws {APIError} If the bundle is not found.
+     */
     async getBundle({ bundleId }) {
         try {
             const bundle = await Bundles.findOne({ _id: bundleId }).lean();
@@ -67,6 +94,16 @@ export const bundleController = {
         }
     },
 
+    /**
+     * Update an existing bundle.
+     * NO permission for bundle name modifications. The manager can create a new one instead.
+     * @param {string} bundleId - The ID of the bundle.
+     * @param {number} [discount] - The new discount percentage for the bundle.
+     * @param {string} [description] - The new description of the bundle.
+     * @param {boolean} [limitedEdition] - Whether the bundle is a limited edition.
+     * @param {Date} [expiresOn] - The new expiration date of the bundle.
+     * @throws {APIError} If the bundle is not found or if there are validation errors.
+     */
     async updateBundle({ bundleId, discount, description, limitedEdition, expiresOn }) {
         try {
 
@@ -106,13 +143,18 @@ export const bundleController = {
         }
     },
 
+    /**
+     * Delete a bundle by ID. This will also delete it from the menu, if it was on it.
+     * @param {string} bundleId - The ID of the bundle.
+     * @throws {APIError} If the bundle is not found.
+     */
     async deleteBundle({ bundleId }) {
         try {
             const deletedBundle = await Bundles.deleteOne({ _id: bundleId }).lean();
-
             if (deletedBundle.deletedCount === 0)
                 throw new APIError(NOT_FOUND, "No such bundle with this ID.");
 
+            await Menu.deleteOne({ 'bundle._id': bundleId }).lean();
         } catch (error) {
             if (error instanceof APIError) throw error;
 
