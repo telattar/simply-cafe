@@ -1,5 +1,5 @@
 import APIError from "../classes/APIError.js";
-import { BAD_REQUEST, INTERNAL_ERROR_MESSAGE, INTERNAL_SERVER_ERROR, NOT_FOUND, UNAUTHORIZED } from "../constants/statusCode.js";
+import { BAD_REQUEST, INTERNAL_ERROR_MESSAGE, INTERNAL_SERVER_ERROR, UNAUTHORIZED } from "../constants/statusCode.js";
 import { CUSTOMER } from "../constants/userTypes.js";
 import { Users } from "../models/users.js";
 import bcrypt from 'bcrypt';
@@ -7,9 +7,10 @@ import bcrypt from 'bcrypt';
 export const authenticationController = {
     /**
      * Login function, authenticates a valid user login and generates a corresponding jwt cookie for them.
-     * @param { string } username
-     * @param { string } password 
-     * @returns { userId, userType } - an object that has the user ID and the user type.
+     * @param {string} username - The username of the user.
+     * @param {string} password - The password of the user.
+     * @returns {Object} An object containing the userId and userType.
+     * @throws {APIError} If the username does not exist or the password is incorrect.
      */
     async login({ username, password }) {
         try {
@@ -31,17 +32,16 @@ export const authenticationController = {
 
 
     /**
-    *Sign Up function, registers a new user in the system.
-    * @param {string} username - The username of the new user. Should be unique.
-    * @param {string} password - The password of the new user. Will be validated in the schema itself,
-    * should contain at least 1 uppercase letter, 1 lowercase letter, and a digit. Minimum length is six.
-    * @param {string} firstName - The first name of the new user.
-    * @param {string} lastName - The last name of the new user.
-    * @param {string} email - The email address of the new user. Will also be validated, and should be unique,
-    * meaning each email address can be used only in 1 account.
-    * @param {string} gender - The gender of the new user. MALE OR FEMALE ONLY.
-    * @returns {Object} - the created user object.
-    */
+     * Sign Up function, registers a new user in the system.
+     * @param {string} username - The username of the new user. Should be unique.
+     * @param {string} password - The password of the new user. Should contain at least 1 uppercase letter, 1 lowercase letter, and a digit. Minimum length is six.
+     * @param {string} firstName - The first name of the new user.
+     * @param {string} lastName - The last name of the new user.
+     * @param {string} email - The email address of the new user. Should be unique.
+     * @param {string} gender - The gender of the new user. MALE OR FEMALE ONLY.
+     * @returns {Object} The created user object.
+     * @throws {APIError} If the email or username is already in use or if there are validation errors.
+     */
     async signUp({ username, password, firstName, lastName, email, gender }) {
         try {
             // salt for ten rounds.

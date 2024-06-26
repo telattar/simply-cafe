@@ -4,8 +4,19 @@ import { BAD_REQUEST, FORBIDDEN, INTERNAL_ERROR_MESSAGE, INTERNAL_SERVER_ERROR, 
 import { ITEM, Menu } from "../models/menu.js";
 import { Orders, orderValidationSchema } from "../models/orders.js";
 
+// Customer can create orders, view their details and cancel them.
+// Chefs mark an order as complete.
 
 export const orderController = {
+    /**
+     * Creates a new order for a customer.
+     * @param {String} customerId - The ID of the customer placing the order.
+     * @param {ObjectId[]} orderedItemIds - An array of item IDs to be ordered. It has to contain at least one Id from a menu object.
+     * @param {String} comment - A comment provided by the customer for the order, if any.
+     * @param {String} paymentMethod - The payment method chosen by the customer. Could be Cash, Debit Card, or Instapay.
+     * @returns {Object} - The created order object.
+     * @throws {APIError} - If validation fails.
+     */
     async createOrder({ customerId, orderedItemIds, comment, paymentMethod }) {
         try {
             var orderedItems = await Menu.find({ _id: { $in: orderedItemIds } }).lean();
@@ -64,6 +75,13 @@ export const orderController = {
         }
     },
 
+    /**
+     * Views a specific order for a customer.
+     * @param {String} customerId - The ID of the customer viewing the order.
+     * @param {String} orderId - The ID of the order to be viewed.
+     * @returns {Object} - The order object.
+     * @throws {APIError} - If the order does not exist or does not belong to the customer.
+     */
     async viewMyOrder({ customerId, orderId }) {
         try {
             const order = await Orders.findOne({ _id: orderId }).lean();
@@ -79,6 +97,14 @@ export const orderController = {
             else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
     },
+
+    /**
+     * Cancels a specific order for a customer.
+     * @param {String} customerId - The ID of the customer cancelling the order.
+     * @param {String} orderId - The ID of the order to be cancelled.
+     * @throws {APIError} - If the order does not exist, does not belong to the customer,
+     * or if the status us either Complete or Cancelled. Logically in this case, the order cannot be cancelled.
+     */
     async cancelOrder({ customerId, orderId }) {
         try {
             const order = await Orders.findOneAndUpdate({ _id: orderId, customerId }, { status: CANCELLED }, { new: false }).lean();
@@ -109,6 +135,12 @@ export const orderController = {
         }
     },
 
+    /**
+     * Completes a specific order.
+     * Only the chef can do this operation
+     * @param {String} orderId - The ID of the order to be completed.
+     * @throws {APIError} - If the order does not exist or cannot be completed due to its status being either Complete or Cancelled.
+     */
     async completeOrder({ orderId }) {
         try {
             const order = await Orders.findOne({ _id: orderId }).lean();

@@ -4,15 +4,20 @@ import { Bundles } from "../models/bundles.js";
 import { Items } from "../models/items.js"
 import { BUNDLE, ITEM, Menu, menuValidationSchema } from "../models/menu.js";
 
+// Any operations related to ITEMS can only be done by the CHEF,
+// while any operations related to the BUNDLES can only be done by the MANAGER.
+
 export const menuController = {
     /**
-     * Adds an existing item to the menu
-     * The menu is basically a collection of some items/bundles along with their availability and stock count.
-     * @param {String} type - this is the type of the menu item. It can be an ITEM or a BUNDLE.
-     * @param {String} itemId - the ID of the item that will be added to the menu. Should be a valid ObjectId
-     * @param {Boolean} availability - indicates whether this item is available for purchase or is out of stock.
-     * @param {Number} stockCount - the amount of currently available item instances. Zero means out of stock.
-     * @returns {Object} addedItem - the item that was added successfully to the collection.
+     * Adds an existing item to the menu.
+     * The menu is a collection of items/bundles, along with their availability and stock count.
+     * @param {string} type - The type of the menu item, either ITEM or BUNDLE.
+     * @param {string} itemId - The ID of the item to be added to the menu. Should be a valid ObjectId.
+     * @param {boolean} availability - Indicates whether the item is available for purchase.
+     * @param {number} stockCount - The amount of currently available item instances.
+     * Zero means out of stock, which also means availability is false.
+     * @returns {object} The item that was added successfully to the collection.
+     * @throws {APIError} If the item ID is invalid, the item is already in the menu, or there are validation errors.
      */
     async addItem({ itemId, availability, stockCount }) {
         try {
@@ -48,6 +53,14 @@ export const menuController = {
         }
     },
 
+    /**
+     * Adds an existing bundle to the menu.
+     * @param {string} bundleId - The ID of the bundle to be added to the menu. Should be a valid ObjectId.
+     * @param {boolean} availability - Indicates whether the bundle is available for purchase.
+     * @param {number} stockCount - The amount of currently available bundle instances. Zero means out of stock, which also means availability is false.
+     * @returns {object} The bundle that was added successfully to the collection.
+     * @throws {APIError} If the bundle ID is invalid, the bundle is already in the menu, or there are validation errors.
+     */
     async addBundle({ bundleId, availability, stockCount }) {
         try {
             const bundle = await Bundles.findOne({ _id: bundleId }).lean();
@@ -83,8 +96,17 @@ export const menuController = {
         }
     },
 
+    /**
+     * Retrieves the menu.
+     * Before doing so, check each bundle on the menu that has an expiresOn date greater than now.
+     * Expired bundles should be REMOVED from the menu.
+     * @returns {object[]} The menu items.
+     * @throws {APIError} If there is an internal server error.
+     */
     async getMenu() {
         try {
+            await Menu.deleteMany({ 'bundle.expiresOn': { $lt: Date.now() } }).lean();
+
             const menu = await Menu.find().lean();
             return menu;
 
@@ -94,6 +116,12 @@ export const menuController = {
         }
     },
 
+    /**
+     * Updates the stock count of an item in the menu.
+     * @param {string} itemId - The ID of the item.
+     * @param {number} stockCount - The new stock count of the item.
+     * @throws {APIError} If the stock count is invalid, the item is not found, or there are validation errors.
+     */
     async updateItemStock({ itemId, stockCount }) {
         try {
             if (stockCount === undefined)
@@ -117,6 +145,12 @@ export const menuController = {
         }
     },
 
+    /**
+     * Updates the stock count of a bundle in the menu.
+     * @param {string} bundleId - The ID of the bundle.
+     * @param {number} stockCount - The new stock count of the bundle.
+     * @throws {APIError} If the stock count is less than zero, the bundle is not found, or there are validation errors.
+     */
     async updateBundleStock({ bundleId, stockCount }) {
         try {
             if (stockCount === undefined)
@@ -140,6 +174,11 @@ export const menuController = {
         }
     },
 
+    /**
+     * Removes an item from the menu.
+     * @param {string} itemId - The ID of the item.
+     * @throws {APIError} If the item is not found.
+     */
     async removeItemFromMenu({ itemId }) {
         try {
             const removedItem = await Menu.deleteOne({ 'item._id': itemId }).lean();
@@ -152,6 +191,11 @@ export const menuController = {
         }
     },
 
+    /**
+     * Removes a bundle from the menu.
+     * @param {string} bundleId - The ID of the bundle.
+     * @throws {APIError} If the bundle is not found.
+     */
     async removeBundleFromMenu({ bundleId }) {
         try {
             const removedBundle = await Menu.deleteOne({ 'bundle._id': bundleId }).lean();

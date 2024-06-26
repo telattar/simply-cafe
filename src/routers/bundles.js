@@ -1,6 +1,6 @@
 import express from 'express';
 import { ADMIN, MANAGER } from '../constants/userTypes.js';
-import { BAD_REQUEST, CREATED, FORBIDDEN, NO_CONTENT, OK } from '../constants/statusCode.js';
+import { CREATED, FORBIDDEN, NO_CONTENT, OK } from '../constants/statusCode.js';
 import { bundleController } from '../controllers/bundle.js';
 
 const bundleRouter = new express.Router();

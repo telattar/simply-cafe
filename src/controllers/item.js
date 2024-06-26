@@ -2,7 +2,20 @@ import APIError from "../classes/APIError.js";
 import { BAD_REQUEST, INTERNAL_ERROR_MESSAGE, INTERNAL_SERVER_ERROR, NOT_FOUND } from "../constants/statusCode.js";
 import { Items, itemValidationSchema } from "../models/items.js"
 
+// Only the chef is allowed to do CRUD operations to an item.
+
 export const itemController = {
+    /**
+     * Create a new item.
+     * @param {string} itemType - The type of the item. Should be one of the following:
+     * Coffee - Cake - Tea - Bakery - Canned Soda - Water - Refreshing drink
+     * @param {string} itemName - The name of the item. Should be unique.
+     * It would be lovely to use local branded-products like Elano water and V7 cola :)
+     * @param {number} price - The price of the item in EGP (Egyptian Pounds).
+     * @param {string} description - The description of the item.
+     * @returns {Object} The created item object.
+     * @throws {APIError} If the item name already exists or if there are validation errors.
+     */
     async createItem({ itemType, itemName, price, description }) {
         try {
             const existingItemName = await Items.findOne({ itemName }).lean();
@@ -33,7 +46,12 @@ export const itemController = {
             else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
     },
-
+    /**
+     * Get an item by its unique identifier.
+     * @param {string} itemId - The ID of the item.
+     * @returns {Object} The item object.
+     * @throws {APIError} If the item is not found.
+     */
     async getItem({ itemId }) {
         try {
             const item = await Items.findOne({ _id: itemId }).lean();
@@ -48,6 +66,14 @@ export const itemController = {
         }
     },
 
+    /**
+     * Update an existing item.
+     * @param {string} itemId - The ID of the item.
+     * @param {string} itemName - The new name of the item.
+     * @param {number} price - The new price of the item.
+     * @param {string} description - The new description of the item.
+     * @throws {APIError} If the item name already exists, if the item is not found, or if the item is not updated.
+     */
     async updateItem({ itemId, itemName, price, description }) {
         try {
             const item = await Items.findOne({ itemName }).lean();
@@ -77,12 +103,18 @@ export const itemController = {
         }
     },
 
+    /**
+     * Delete an item by ID. This will also remove it from the menu, if it was on it.
+     * @param {string} itemId - The ID of the item.
+     * @throws {APIError} If the item is not found.
+     */
     async deleteItem({ itemId }) {
         try {
             const deletedItem = await Items.deleteOne({ _id: itemId }).lean();
             if (deletedItem.deletedCount === 0)
                 throw new APIError(NOT_FOUND, "No such item with this ID.");
 
+            await Menu.deleteOne({ 'item._id': itemId }).lean();
         } catch (error) {
             if (error instanceof APIError) throw error;
 
