@@ -8,7 +8,7 @@ export const itemController = {
     /**
      * Create a new item.
      * @param {string} itemType - The type of the item. Should be one of the following:
-     * Coffee - Cake - Tea - Bakery - Canned Soda - Water - Refreshing drink
+     * Coffee - Cake - Tea - Bakery - Canned Soda - Water - Refreshing Drink
      * @param {string} itemName - The name of the item. Should be unique.
      * It would be lovely to use local branded-products like Elano water and V7 cola :)
      * @param {number} price - The price of the item in EGP (Egyptian Pounds).
