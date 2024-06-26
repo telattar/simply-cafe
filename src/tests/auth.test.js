@@ -5,6 +5,7 @@ import { CUSTOMER, FEMALE, MALE } from "../constants/userTypes.js";
 import request from "supertest";
 import { faker } from "@faker-js/faker"
 import { BAD_REQUEST, CREATED, OK, UNAUTHORIZED } from "../constants/statusCode.js";
+
 config();
 
 // to use the same agent in all tests.

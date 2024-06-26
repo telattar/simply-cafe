@@ -5,9 +5,8 @@ import request from "supertest";
 import { faker } from "@faker-js/faker";
 import { Items } from "../models/items.js";
 import { BAD_REQUEST, CREATED, FORBIDDEN, NOT_FOUND, NO_CONTENT, OK } from "../constants/statusCode.js";
-import { Bundles } from "../models/bundles.js";
 import { BUNDLE, ITEM, Menu } from "../models/menu.js";
-import { BAKERY, COFFEE } from "../constants/menuItems.js";
+import { COFFEE } from "../constants/menuItems.js";
 
 config();
 

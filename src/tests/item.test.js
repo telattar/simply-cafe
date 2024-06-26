@@ -3,7 +3,7 @@ import app from "../index.js";
 import { config } from "dotenv";
 import request from "supertest";
 import { faker } from "@faker-js/faker"
-import { BAD_REQUEST, CREATED, FORBIDDEN, NOT_FOUND, NO_CONTENT, OK, UNAUTHORIZED } from "../constants/statusCode.js";
+import { BAD_REQUEST, CREATED, FORBIDDEN, NOT_FOUND, NO_CONTENT, OK } from "../constants/statusCode.js";
 import { COFFEE, TEA } from "../constants/menuItems.js";
 import { Items } from "../models/items.js";
 config();

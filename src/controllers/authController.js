@@ -1,5 +1,5 @@
 import APIError from "../classes/APIError.js";
-import { BAD_REQUEST, INTERNAL_ERROR_MESSAGE, INTERNAL_SERVER_ERROR, NOT_FOUND, UNAUTHORIZED } from "../constants/statusCode.js";
+import { BAD_REQUEST, INTERNAL_ERROR_MESSAGE, INTERNAL_SERVER_ERROR, UNAUTHORIZED } from "../constants/statusCode.js";
 import { CUSTOMER } from "../constants/userTypes.js";
 import { Users } from "../models/users.js";
 import bcrypt from 'bcrypt';
