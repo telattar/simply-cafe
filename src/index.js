@@ -9,6 +9,7 @@ import itemRouter from "./routers/item.js";
 import bundleRouter from "./routers/bundles.js";
 import menuRouter from "./routers/menu.js";
 import orderRouter from "./routers/order.js";
+import cors from 'cors';
 
 config();
 
@@ -18,7 +19,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(bodyParser.json());
-
+app.use(cors());
 
 const port = process.env.PORT || "8000";
 mongoose.connect(process.env.mongoURI)
