@@ -14,8 +14,8 @@ const maxAge = 30 * 24 * 60 * 60;
 authRouter.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
-        const { userId, userType } = await authenticationController.login({ username, password });
-
+        const user = await authenticationController.login({ username, password });
+        const { userId, userType } = user;
         //no errors thrown means successful login
         const token = jwt.sign({ userId, userType }, process.env.JWT_SECRET_TOKEN, {
             expiresIn: maxAge,
@@ -23,7 +23,7 @@ authRouter.post('/login', async (req, res) => {
 
         // in cookies, maxAge is dealt in milliseconds. to use seconds, multiply by 1000
         res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
-        res.status(OK).json({ userId, userType });
+        res.status(OK).json({ user });
     } catch (error) {
         res.status(error.code).json({ message: error.message });
     }

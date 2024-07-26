@@ -23,7 +23,7 @@ export const authenticationController = {
                 throw new APIError(UNAUTHORIZED, "Username or Password is incorrect.");
 
             // successful login
-            return { userId: user._id, userType: user.userType };
+            return user;
         } catch (error) {
             if (error instanceof APIError) throw error;
             else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
