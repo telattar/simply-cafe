@@ -1,6 +1,7 @@
 import APIError from "../classes/APIError.js";
 import { BAD_REQUEST, INTERNAL_ERROR_MESSAGE, INTERNAL_SERVER_ERROR, NOT_FOUND } from "../constants/statusCode.js";
 import { Items, itemValidationSchema } from "../models/items.js"
+import { Menu } from "../models/menu.js";
 
 // Only the chef is allowed to do CRUD operations to an item.
 
@@ -114,7 +115,7 @@ export const itemController = {
             if (deletedItem.deletedCount === 0)
                 throw new APIError(NOT_FOUND, "No such item with this ID.");
 
-            await Items.deleteOne({ 'item._id': itemId }).lean();
+            await Menu.deleteOne({ 'item._id': itemId }).lean();
         } catch (error) {
             console.log(error)
 
