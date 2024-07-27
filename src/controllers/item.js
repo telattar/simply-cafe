@@ -114,10 +114,11 @@ export const itemController = {
             if (deletedItem.deletedCount === 0)
                 throw new APIError(NOT_FOUND, "No such item with this ID.");
 
-            await Menu.deleteOne({ 'item._id': itemId }).lean();
+            await Items.deleteOne({ 'item._id': itemId }).lean();
         } catch (error) {
-            if (error instanceof APIError) throw error;
+            console.log(error)
 
+            if (error instanceof APIError) throw error;
             else throw new APIError(INTERNAL_SERVER_ERROR, INTERNAL_ERROR_MESSAGE);
         }
     }
