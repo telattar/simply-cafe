@@ -1,69 +1,84 @@
-import express from 'express';
-import { ADMIN, CHEF, CUSTOMER } from '../constants/userTypes.js';
-import { CREATED, FORBIDDEN, NO_CONTENT, OK } from '../constants/statusCode.js';
-import { orderController } from '../controllers/order.js';
+import express from "express";
+import { ADMIN, CHEF, CUSTOMER } from "../constants/userTypes.js";
+import { CREATED, FORBIDDEN, NO_CONTENT, OK } from "../constants/statusCode.js";
+import { orderController } from "../controllers/order.js";
 
 const orderRouter = new express.Router();
 
-orderRouter.post('/newOrder', async (req, res) => {
-    try {
-        const { userId: customerId, userType } = req.user;
-        const { orderedItemIds, comment, paymentMethod } = req.body;
+orderRouter.post("", async (req, res) => {
+  try {
+    const { userId: customerId, userType } = req.user;
+    const { orderedItemIds, comment, paymentMethod } = req.body;
 
-        if (userType !== CUSTOMER)
-            return res.status(FORBIDDEN).json({ message: "Only a customer can make an order." });
+    if (userType !== CUSTOMER)
+      return res
+        .status(FORBIDDEN)
+        .json({ message: "Only a customer can make an order." });
 
-        const newOrder = await orderController.createOrder({ customerId, orderedItemIds, comment, paymentMethod });
-        return res.status(CREATED).json({ newOrder });
-    } catch (error) {
-        return res.status(error.code).json({ message: error.message });
-    }
+    const newOrder = await orderController.create({
+      customerId,
+      orderedItemIds,
+      comment,
+      paymentMethod,
+    });
+    return res.status(CREATED).json({ newOrder });
+  } catch (error) {
+    return res.status(error.code).json({ message: error.message });
+  }
 });
 
-orderRouter.get('/viewMyOrder', async (req, res) => {
-    try {
-        const { userId: customerId, userType } = req.user;
+orderRouter.get("/:id", async (req, res) => {
+  try {
+    const { userId: customerId, userType } = req.user;
 
-        if (userType !== CUSTOMER)
-            return res.status(FORBIDDEN).json({ message: "Only a customer can view their order." });
+    if (userType !== CUSTOMER)
+      return res
+        .status(FORBIDDEN)
+        .json({ message: "Only a customer can view their order." });
 
-        const { orderId } = req.query;
-        const order = await orderController.viewMyOrder({ customerId, orderId });
+    const { id: orderId } = req.params;
+    const order = await orderController.getCustomerOrder({
+      customerId,
+      orderId,
+    });
 
-        return res.status(OK).json({ order });
-
-    } catch (error) {
-        return res.status(error.code).json({ message: error.message });
-    }
+    return res.status(OK).json({ order });
+  } catch (error) {
+    return res.status(error.code).json({ message: error.message });
+  }
 });
 
-orderRouter.patch('/cancelOrder', async (req, res) => {
-    try {
-        const { userId: customerId, userType } = req.user;
-        const { orderId } = req.query;
+orderRouter.patch("/:id/cancel", async (req, res) => {
+  try {
+    const { userId: customerId, userType } = req.user;
+    const { id: orderId } = req.params;
 
-        if (userType !== CUSTOMER)
-            return res.status(FORBIDDEN).json({ message: "Only a customer can cancel THEIR order." });
+    if (userType !== CUSTOMER)
+      return res
+        .status(FORBIDDEN)
+        .json({ message: "Only a customer can cancel THEIR order." });
 
-        await orderController.cancelOrder({ customerId, orderId });
-        res.status(NO_CONTENT).json();
-    } catch (error) {
-        res.status(error.code).json({ message: error.message });
-    }
+    await orderController.cancel({ customerId, orderId });
+    res.status(NO_CONTENT).json();
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
 });
 
-orderRouter.patch('/completeOrder', async (req, res) => {
-    try {
-        const { userType } = req.user;
-        const { orderId } = req.query;
+orderRouter.patch("/:id/complete", async (req, res) => {
+  try {
+    const { userType } = req.user;
+    const { id: orderId } = req.params;
 
-        if (![ADMIN, CHEF].includes(userType))
-            return res.status(FORBIDDEN).json({ message: "Only a chef can mark an order as complete." });
+    if (![ADMIN, CHEF].includes(userType))
+      return res
+        .status(FORBIDDEN)
+        .json({ message: "Only a chef can mark an order as complete." });
 
-        await orderController.completeOrder({ orderId });
-        return res.status(NO_CONTENT).json();
-    } catch (error) {
-        res.status(error.code).json({ message: error.message });
-    }
+    await orderController.markAsComplete({ orderId });
+    return res.status(NO_CONTENT).json();
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
 });
 export default orderRouter;

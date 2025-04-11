@@ -5,6 +5,7 @@ A simple server-side application of a coffeeshop management system. This project
 Prepare a cup of coffee, before you read the rest of this file 😄.
 
 ## Tech Used
+
 ![Node.js](https://img.shields.io/badge/Node%20js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![Express.js](https://img.shields.io/badge/Express%20js-000000?style=for-the-badge&logo=express&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
@@ -13,7 +14,8 @@ Prepare a cup of coffee, before you read the rest of this file 😄.
 
 ## Features
 
-#### User Authentication 
+#### User Authentication
+
 Secure user registration and login functionality. **How?**
 
 - [Bcrypt](https://www.npmjs.com/package/bcrypt) is used to salt and hash the password during signup instead of using other encryption techniques.
@@ -21,75 +23,68 @@ Secure user registration and login functionality. **How?**
 - User roles are checked at each endpoint to make sure users are **authorized** to do a specific action.
 
 #### Product Management and Order Processing
+
 CRUD operations for managing coffee shop products and handling customer orders, including order creation, updating, and deletion. Please refer to the API Endpoints section for more information.
 
 #### Integration Testing
-Comprehensive tests using Jest and Supertest. 
+
+Comprehensive tests using Jest and Supertest.
 
 ## API Endpoints Summary
 
 For input/output details, refer to the description embedded above each function in any file inside the `controller` directiory.
 
-| Endpoint                  | Method | Description                                    |
-|---------------------------|--------|------------------------------------------------|
-| /login                    | POST   | Logs in an existing user                       |
-| /signUp                   | POST   | Registers a new user                           |
-| /logout                   | POST   | Logs out the currently logged-in user          |
-| /item/createItem          | POST   | Creates a new item                             |
-| /item/getItem             | GET    | Retrieves details of a specific item           |
-| /item/updateItem          | PATCH  | Updates details of a specific item             |
-| /item/deleteItem          | DELETE | Deletes a specific item                        |
-| /bundle/createBundle      | POST   | Creates a new bundle                           |
-| /bundle/getBundle         | GET    | Retrieves details of a specific bundle         |
-| /bundle/updateBundle      | PATCH  | Updates details of a specific bundle           |
-| /bundle/deleteBundle      | DELETE | Deletes a specific bundle                      |
-| /menu/addToMenu           | POST   | Adds an item or bundle to the menu             |
-| /menu/getMenu             | GET    | Retrieves the entire menu                      |
-| /menu/updateStock         | PATCH  | Updates stock of an item or bundle in the menu |
-| /menu/removeFromMenu      | DELETE | Removes an item or bundle from the menu         |
-| /order/newOrder           | POST   | Creates a new order                            |
-| /order/viewMyOrder        | GET    | Retrieves details of a customer's order        |
-| /order/cancelOrder        | PATCH  | Cancels a customer's order                     |
-| /order/completeOrder      | PATCH  | Marks an order as complete                     |
+| Endpoint               | Method | Description                               |
+| ---------------------- | ------ | ----------------------------------------- |
+| /login                 | POST   | Logs in an existing user                  |
+| /signUp                | POST   | Registers a new user                      |
+| /logout                | POST   | Logs out the currently logged-in user     |
+| /item                  | POST   | Creates a new item                        |
+| /item/:id              | GET    | Retrieves details of a specific item      |
+| /item/:id              | PATCH  | Updates details of a specific item        |
+| /item/:id              | DELETE | Deletes a specific item                   |
+| /bundle                | POST   | Creates a new bundle                      |
+| /bundle/:id            | GET    | Retrieves details of a specific bundle    |
+| /bundle/:id            | PATCH  | Updates details of a specific bundle      |
+| /bundle/:id            | DELETE | Deletes a specific bundle                 |
+| /menu/item             | POST   | Adds an item to the menu                  |
+| /menu/bundle           | POST   | Adds a bundle to the menu                 |
+| /menu                  | GET    | Retrieves the entire menu                 |
+| /menu/item/:id/stock   | PATCH  | Updates the stock of an item in the menu  |
+| /menu/bundle/:id/stock | PATCH  | Updates the stock of a bundle in the menu |
+| /menu/item/:id         | DELETE | Removes an item from the menu             |
+| /menu/bundle/:id       | DELETE | Removes a bundle from the menu            |
+| /order                 | POST   | Creates a new order                       |
+| /order/:id             | GET    | Retrieves details of a customer's order   |
+| /order/:id/cancel      | PATCH  | Cancels a customer's order                |
+| /order/:id/complete    | PATCH  | Marks an order as complete                |
 
 ## Installation
 
 1. **Clone the repository**:
-    ```bash
-    git clone https://github.com/telattar/simply-cafe.git
-    cd simply-cafe
-    ```
+
+   ```bash
+   git clone https://github.com/telattar/simply-cafe.git
+   cd simply-cafe
+   ```
 
 2. **Install dependencies**:
-    ```bash
-    npm install
-    ```
+
+   ```bash
+   npm install
+   ```
 
 3. **Set up environment variables**:
 
-    Create a `.env` file in the root directory and add the variables provided in the `.env.sample` file. More details in the file itself.
+   Create a `.env` file in the root directory and add the variables provided in the `.env.sample` file. More details in the file itself.
 
+4. **Run the application**:
 
-5. **Run the application**: please make sure your terminal is at `src` directory.
-    ```bash
-    nodemon index
-    ```
+   ```bash
+   npm start
+   ```
 
-6. **Run tests**: please make sure your terminal is at `src` directory. 
-    ```bash
-    npx jest --node-options=--experimental-vm-modules --detectOpenHandles --verbose src/tests/TESTFILENAME.js
-    ```
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Contact
-
-For any questions or feedback, please contact:
-
-**Tarteel Elattar**
-
-[GitHub](https://github.com/telattar)
-
-[Email](mailto:tarteelafattahibrahim@gmail.com)
+5. **Run tests**: please make sure your terminal is at `src` directory.
+   ```bash
+   npx jest --node-options=--experimental-vm-modules --detectOpenHandles --verbose src/tests/TESTFILENAME.js
+   ```
