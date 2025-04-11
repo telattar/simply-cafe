@@ -1,8 +1,6 @@
 # Simply Cafe ☕
 
-A simple server-side application of a coffeeshop management system. This project demonstrates the implementation of various backend functionalities including user authentication, product management, and order processing.
-
-Prepare a cup of coffee, before you read the rest of this file 😄.
+A simple server-side application of a coffeeshop management system.
 
 ## Tech Used
 
@@ -22,7 +20,7 @@ Secure user registration and login functionality. **How?**
 - Each authenticated user is given a signed JWT token at login.
 - User roles are checked at each endpoint to make sure users are **authorized** to do a specific action.
 
-#### Product Management and Order Processing
+#### Order Processing
 
 CRUD operations for managing coffee shop products and handling customer orders, including order creation, updating, and deletion. Please refer to the API Endpoints section for more information.
 
